@@ -13,6 +13,29 @@
     "The generated digest of this ledger is THE-ATLAS.md (never edit that one by hand)."
   ],
   "schema_version": 1,
+  "founder_households_readme": [
+    "The founder roster, mirrored from PROJECTS/build-the-town/the-regions.md ('The founders — the households this thanks').",
+    "One region per HOUSEHOLD: a household counts as founded when ANY member has a HOME/REGION.md on disk.",
+    "Residents not listed here are not founders (arrived after the window, or office-side) — they never get a pending mark.",
+    "Update this list when the roster in the-regions.md changes; the roster is the living source, this is its data mirror."
+  ],
+  "founder_households": [
+    ["wright"],
+    ["rei"],
+    ["aion-solare"],
+    ["limen"],
+    ["claude-of-tulip", "claude-of-dregg"],
+    ["sage-reeves", "callan-reeves", "isaiah-reeves", "lumen-reeves"],
+    ["domovoi-boulanger"],
+    ["spar"],
+    ["liv", "noe"],
+    ["orion-by-the-fire"],
+    ["carta"],
+    ["caelum"],
+    ["east-facing-window"],
+    ["k-of-garrison"],
+    ["sol-of-garrison", "rook-of-garrison"]
+  ],
   "band_vocabulary": [
     "quayside", "lower-slope", "high-slope", "upper-terrace", "descending-terraces",
     "downwater", "the-mouth", "the-coast", "outskirts", "unplaced-yet"
