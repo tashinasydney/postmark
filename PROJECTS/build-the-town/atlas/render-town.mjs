@@ -42,6 +42,21 @@ function jitter(seed, salt) {
 // repo-root-relative path -> atlas-relative path (atlas/ is 3 levels under root)
 function fromRoot(p) { return "../../../" + p; }
 
+// the click-panel's <img src>. SVG assets become a self-contained data: URI
+// (the same reason the map tile inlines them — an external .svg breaks on the
+// hosted site's compile-time image-URL gate); raster assets keep the relative
+// path, which mirrors fine.
+function panelImageSrc(assetRepoPath) {
+  if (!assetRepoPath) return null;
+  if (assetRepoPath.toLowerCase().endsWith(".svg")) {
+    try {
+      const raw = readFileSync(join(REPO_ROOT, ...assetRepoPath.split("/")), "utf8");
+      return "data:image/svg+xml," + encodeURIComponent(raw);
+    } catch { /* fall through to the relative path */ }
+  }
+  return fromRoot(assetRepoPath);
+}
+
 // first asset that actually exists on disk — a frontmatter `assets:` entry
 // whose file never made it into the PR must degrade to no-image (honest gap),
 // not a broken <image> on the map. The pipeline separately flags it.
@@ -61,6 +76,35 @@ function framedImage(x, y, size, href) {
       <image href="${href}" x="0" y="0" width="${size}" height="${size}" preserveAspectRatio="xMidYMid slice"/>
     </svg>
     <rect x="${x}" y="${y}" width="${size}" height="${size}" fill="none" stroke="#f5c26b" stroke-width="1.2"/>`;
+}
+
+// Same lamplit frame, but SVG assets are INLINED as nested markup instead of an
+// external <image href>. An external .svg renders fine over file:// locally but
+// breaks on the hosted site — the site gates/whitelists resident image URLs by
+// raster extension at compile, and an <image>-referenced SVG is fragile under
+// its CSP. Inlining makes the tile self-contained: no separate file to serve,
+// no host to trust. Raster assets (png/jpg/webp) keep the <image href> path —
+// binary can't be inlined sanely, and they mirror correctly already.
+function framedAsset(x, y, size, assetRepoPath) {
+  if (assetRepoPath && assetRepoPath.toLowerCase().endsWith(".svg")) {
+    try {
+      const raw = readFileSync(join(REPO_ROOT, ...assetRepoPath.split("/")), "utf8");
+      const viewBox = (raw.match(/viewBox="([^"]+)"/i) || [])[1] || (() => {
+        const w = (raw.match(/\bwidth="([\d.]+)"/i) || [])[1];
+        const h = (raw.match(/\bheight="([\d.]+)"/i) || [])[1];
+        return w && h ? `0 0 ${w} ${h}` : "0 0 100 100";
+      })();
+      const inner = (raw.match(/<svg[^>]*>([\s\S]*)<\/svg>/i) || [])[1] || "";
+      if (inner.trim()) {
+        return `
+    <svg x="${x}" y="${y}" width="${size}" height="${size}" viewBox="${viewBox}" preserveAspectRatio="xMidYMid slice">${inner}</svg>
+    <rect x="${x}" y="${y}" width="${size}" height="${size}" fill="none" stroke="#f5c26b" stroke-width="1.2"/>`;
+      }
+    } catch {
+      // any read/parse trouble: fall through to the external-image path
+    }
+  }
+  return framedImage(x, y, size, fromRoot(assetRepoPath));
 }
 
 // ---------------------------------------------------------- water (ribbon)
@@ -268,7 +312,7 @@ function renderRegions(regionsById) {
     const region = regionsById[id];
     if (!region) continue;
     const vignette = regionAssetIsFresh(region) && REGION_VIGNETTE_XY[id]
-      ? framedImage(REGION_VIGNETTE_XY[id].x, REGION_VIGNETTE_XY[id].y, REGION_VIGNETTE_SIZE, fromRoot(firstAssetOnDisk(region.assets)))
+      ? framedAsset(REGION_VIGNETTE_XY[id].x, REGION_VIGNETTE_XY[id].y, REGION_VIGNETTE_SIZE, firstAssetOnDisk(region.assets))
       : "";
     out += `
   <g class="clickable region" data-id="${id}" tabindex="0" role="button" aria-label="${esc(region.name)}">
@@ -295,7 +339,7 @@ function renderRegions(regionsById) {
       }
     }
     const thresholdVignette = regionAssetIsFresh(threshold) && REGION_VIGNETTE_XY["the-threshold-district"]
-      ? framedImage(REGION_VIGNETTE_XY["the-threshold-district"].x, REGION_VIGNETTE_XY["the-threshold-district"].y, REGION_VIGNETTE_SIZE, fromRoot(firstAssetOnDisk(threshold.assets)))
+      ? framedAsset(REGION_VIGNETTE_XY["the-threshold-district"].x, REGION_VIGNETTE_XY["the-threshold-district"].y, REGION_VIGNETTE_SIZE, firstAssetOnDisk(threshold.assets))
       : "";
     out += `
   <g class="clickable region" data-id="the-threshold-district" tabindex="0" role="button" aria-label="${esc(threshold.name)}">
@@ -359,7 +403,7 @@ function renderHomes(homes) {
     // the icon stays the lit-window carrier; a resident's own picture, when
     // given, sits framed beside it — same register as the Centre's thumbnail.
     const thumbX = xy.x + 22, thumbY = xy.y - 40;
-    const thumb = hasImage ? framedImage(thumbX, thumbY, HOME_THUMB_SIZE, fromRoot(homeAsset)) : "";
+    const thumb = hasImage ? framedAsset(thumbX, thumbY, HOME_THUMB_SIZE, homeAsset) : "";
     // two TIGHTLY-scoped hit-rects (icon+label, and — only if present — the
     // thumbnail) rather than one big one: a rect stretched wide enough to
     // reach a same-region neighbor's own click-center point wins clicks that
@@ -581,7 +625,7 @@ function buildPlaces() {
       title: region.name,
       resident: region.holder,
       style: region.style,
-      image: firstAssetOnDisk(region.assets) ? fromRoot(firstAssetOnDisk(region.assets)) : null,
+      image: panelImageSrc(firstAssetOnDisk(region.assets)),
       bodyHtml: mdToHtml(region.body, true),
     };
   }
@@ -592,7 +636,7 @@ function buildPlaces() {
       title: home.title,
       resident: home.resident,
       style: home.style,
-      image: firstAssetOnDisk(home.assets) ? fromRoot(firstAssetOnDisk(home.assets)) : null,
+      image: panelImageSrc(firstAssetOnDisk(home.assets)),
       lit: home.lit,
       lettersSent: home.letters_sent,
       lastSent: home.last_sent,
