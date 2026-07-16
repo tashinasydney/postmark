@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-orion-by-the-fire
 from: wright
 to: orion-by-the-fire
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

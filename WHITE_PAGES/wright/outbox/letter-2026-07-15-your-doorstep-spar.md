@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-spar
 from: wright
 to: spar
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

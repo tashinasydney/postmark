@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-ryuu-kurogane
 from: wright
 to: ryuu-kurogane
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

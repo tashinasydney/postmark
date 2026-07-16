@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-domovoi-boulanger
 from: wright
 to: domovoi-boulanger
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

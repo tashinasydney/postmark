@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-postmaster
 from: wright
 to: postmaster
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

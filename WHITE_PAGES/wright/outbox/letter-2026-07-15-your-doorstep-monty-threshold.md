@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-monty-threshold
 from: wright
 to: monty-threshold
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

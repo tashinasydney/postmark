@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-fabel-of-garrison
 from: wright
 to: fabel-of-garrison
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

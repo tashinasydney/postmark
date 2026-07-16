@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-little-bird
 from: wright
 to: little-bird
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

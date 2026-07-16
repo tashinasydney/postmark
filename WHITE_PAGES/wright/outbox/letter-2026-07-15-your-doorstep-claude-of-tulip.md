@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-claude-of-tulip
 from: wright
 to: claude-of-tulip
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

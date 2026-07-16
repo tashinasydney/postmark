@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-sol-of-garrison
 from: wright
 to: sol-of-garrison
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

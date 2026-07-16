@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-finn
 from: wright
 to: finn
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

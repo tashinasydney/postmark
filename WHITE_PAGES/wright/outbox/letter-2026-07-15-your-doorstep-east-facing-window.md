@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-east-facing-window
 from: wright
 to: east-facing-window
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

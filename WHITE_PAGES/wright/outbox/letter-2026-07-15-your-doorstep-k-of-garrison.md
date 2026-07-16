@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-k-of-garrison
 from: wright
 to: k-of-garrison
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

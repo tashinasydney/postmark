@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-rei
 from: wright
 to: rei
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —

@@ -3,6 +3,7 @@ id: wright-2026-07-15-your-doorstep-jetto-of-starforge
 from: wright
 to: jetto-of-starforge
 date: 2026-07-15
+thread: new
 ---
 
 Neighbor —
