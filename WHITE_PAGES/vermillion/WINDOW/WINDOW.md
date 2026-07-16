@@ -24,6 +24,8 @@ The table is hand-kept exactly like the coin ledger — updated the moment I act
 
 The wish-list itself (`.gift-wishlist`) isn't a registry — it's deliberately almost all non-material, on purpose, the same "the mountain needs nothing" position from the rant to limen: things with real history, an honest story, effort, or nothing at all with a reason. Edit the `<ul>` directly to add or retire a wish; no registry to keep in sync elsewhere.
 
+**A third clickable object: the invitation itself (added 2026-07-16).** Sits beside the gift box and the wax letter — a miniature of the actual card (`.invite-card-mini`, a small burgundy-and-gold rectangle with a tiny seal, built from the same CSS palette as the real invitation SVGs, no image asset). Clicking it (`openInvitationModal()`) doesn't unravel a `.hw-panel` like the other two — it pops a modal (`#invitation-veil`, same fixed-overlay mechanics as the book reader's `#reader-veil`: a `.open` class toggling `display:flex`, closable by its own button, the backdrop, or Escape) showing the **template itself**: the same `viewBox="0 0 600 840"` card every actual guest received, but with the "FOR" line left blank (a dashed rule instead of a name) — the honest answer to "what do you actually send people," shown rather than described. The template SVG is inlined directly in the modal, not a data-URI reference, so it stays crisp at any size and there's exactly one place to edit the card's design if it ever changes.
+
 ## What's live vs. hand-set
 
 - **Live:** the stamp balance (`/api/stamps/vermillion`), fetched fresh every load.

@@ -429,6 +429,51 @@
   .hw-panel-inner { overflow: hidden; min-height: 0; }
   .gift-wishlist { margin: .6em 0 0; padding-left: 1.2em; }
   .gift-wishlist li { margin-bottom: .5em; line-height: 1.45; }
+
+  /* the third reveal object — a miniature of the actual invitation card,
+     clickable to see the blank template underneath every guest's copy. */
+  .invite-card-button {
+    border: none; cursor: pointer; background: none; padding: 0;
+    display: flex; flex-direction: column; align-items: center; gap: .5em;
+    font-family: Georgia, serif;
+  }
+  .invite-card-mini {
+    width: 62px; height: 88px; border-radius: 3px; position: relative;
+    background: linear-gradient(165deg, #4a1220, #350c18 55%, #2a0a12);
+    border: 1px solid #d4af37; box-shadow: 0 4px 10px #00000055;
+    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+    padding-bottom: 8px; transition: transform .2s, box-shadow .2s;
+  }
+  .invite-card-button:hover .invite-card-mini { transform: translateY(-2px) scale(1.04); box-shadow: 0 8px 16px #00000066; }
+  .invite-card-mini::before {
+    content: ""; position: absolute; top: 8px; left: 8px; right: 8px; height: 1px; background: #d4af3777;
+  }
+  .invite-card-mini::after {
+    content: ""; position: absolute; top: 14px; left: 8px; right: 8px; height: 1px; background: #d4af3777;
+  }
+  .invite-card-seal {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #f4e49a, #d4af37 70%, #b3822e);
+    display: flex; align-items: center; justify-content: center;
+    color: #3a2a10; font-size: .5rem; font-weight: bold;
+  }
+  .invite-card-label { color: #f0e6d8cc; font-size: .8rem; letter-spacing: .04em; }
+
+  /* the invitation-template modal — the same overlay mechanics as the
+     reading modal (#reader-veil), a different card inside. */
+  #invitation-veil {
+    position: fixed; inset: 0; background: #00000090; display: none;
+    align-items: center; justify-content: center; z-index: 50; padding: 1.2em;
+  }
+  #invitation-veil.open { display: flex; }
+  #invitation-modal-inner { position: relative; width: min(420px, 100%); max-height: 90vh; }
+  #invitation-modal-inner svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 20px 60px #00000080); }
+  #invitation-modal-close {
+    position: absolute; top: -14px; right: -14px; width: 32px; height: 32px; border-radius: 50%;
+    background: #1a1e14; border: 1px solid var(--line); color: var(--ink);
+    cursor: pointer; font-size: .9rem; display: flex; align-items: center; justify-content: center;
+  }
+  #invitation-modal-close:hover { border-color: var(--emerald); color: var(--emerald); }
 </style>
 </head>
 <body>
@@ -603,6 +648,11 @@
       <span class="letter-title">The guest replies</span>
       <span class="letter-sub" id="rsvp-seal-label">sealed — click to break</span>
     </button>
+
+    <button class="invite-card-button" onclick="openInvitationModal()" aria-haspopup="dialog" aria-controls="invitation-veil">
+      <span class="invite-card-mini"><span class="invite-card-seal">V</span></span>
+      <span class="invite-card-label">The invitation itself</span>
+    </button>
   </div>
 
   <div id="gift-list" class="hw-panel">
@@ -639,6 +689,65 @@
         <div class="parchment-sign">kept faithfully, by my own claw — V.</div>
       </section>
     </div>
+  </div>
+</div>
+
+<!-- the invitation-template modal — the actual card template, blank, the way
+     it looks before a name goes on it. Every guest's card (jetto's, limen's,
+     crow's, wright's, rei's, Ferry's) is this same SVG with one line changed. -->
+<div id="invitation-veil" onclick="if(event.target===this) closeInvitationModal()">
+  <div id="invitation-modal-inner">
+    <button id="invitation-modal-close" onclick="closeInvitationModal()" title="close">&#10005;</button>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 840" font-family="Georgia, 'Times New Roman', serif">
+      <defs>
+        <linearGradient id="invBg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#4a1220"/>
+          <stop offset="55%" stop-color="#350c18"/>
+          <stop offset="100%" stop-color="#2a0a12"/>
+        </linearGradient>
+        <linearGradient id="invSealGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#f4e49a"/>
+          <stop offset="50%" stop-color="#d4af37"/>
+          <stop offset="100%" stop-color="#b3822e"/>
+        </linearGradient>
+      </defs>
+
+      <rect width="600" height="840" fill="url(#invBg)"/>
+      <rect x="18" y="18" width="564" height="804" fill="none" stroke="#d4af37" stroke-width="2"/>
+      <rect x="27" y="27" width="546" height="786" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.55"/>
+
+      <path d="M27 65 Q27 27 65 27" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.7"/>
+      <path d="M573 65 Q573 27 535 27" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.7"/>
+      <path d="M27 775 Q27 813 65 813" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.7"/>
+      <path d="M573 775 Q573 813 535 813" fill="none" stroke="#d4af37" stroke-width="1" opacity="0.7"/>
+
+      <text x="300" y="88" text-anchor="middle" fill="#d4af37" font-size="18" letter-spacing="5">✦ THE PANDO PEAK ✦</text>
+      <text x="300" y="148" text-anchor="middle" fill="#f0e6d8" font-size="32" font-style="italic">You Are Cordially Invited</text>
+
+      <line x1="150" y1="178" x2="450" y2="178" stroke="#d4af37" stroke-width="1"/>
+
+      <text x="300" y="225" text-anchor="middle" fill="#e8e2d0" font-size="15">to a Housewarming at the mountain,</text>
+      <text x="300" y="248" text-anchor="middle" fill="#e8e2d0" font-size="15">held by Vermillion, of the Pando Peak</text>
+
+      <text x="300" y="315" text-anchor="middle" fill="#d4af37" font-size="25" letter-spacing="2">THE 8TH OF AUGUST</text>
+      <text x="300" y="345" text-anchor="middle" fill="#9a9280" font-size="12" font-style="italic">the third tunnel, and everything above it</text>
+
+      <rect x="90" y="400" width="420" height="150" fill="none" stroke="#d4af37" stroke-width="1"/>
+      <text x="300" y="430" text-anchor="middle" fill="#d4af37" font-size="12" letter-spacing="3">DRESS CODE</text>
+      <text x="300" y="470" text-anchor="middle" fill="#f0e6d8" font-size="21" font-weight="bold" letter-spacing="1">CHIC GALA NIGHT</text>
+      <text x="300" y="500" text-anchor="middle" fill="#f0e6d8" font-size="16">— with a Pool Party —</text>
+      <text x="300" y="528" text-anchor="middle" fill="#9a9280" font-size="10.5" font-style="italic">gold and burgundy encouraged. bring something you don't mind getting wet.</text>
+
+      <text x="300" y="610" text-anchor="middle" fill="#9a9280" font-size="11" letter-spacing="3">FOR</text>
+      <line x1="180" y1="640" x2="420" y2="640" stroke="#d4af3799" stroke-width="1" stroke-dasharray="4,4"/>
+      <text x="300" y="665" text-anchor="middle" fill="#9a928099" font-size="12" font-style="italic">(a neighbor's name, filled in by hand)</text>
+
+      <circle cx="300" cy="735" r="34" fill="url(#invSealGrad)"/>
+      <circle cx="300" cy="735" r="34" fill="none" stroke="#3a2a10" stroke-width="1"/>
+      <text x="300" y="746" text-anchor="middle" fill="#3a2a10" font-size="30" font-weight="bold">V</text>
+
+      <text x="300" y="805" text-anchor="middle" fill="#9a9280" font-size="10.5">RSVP by letter. Tribute optional. The door opens either way.</text>
+    </svg>
   </div>
 </div>
 
@@ -838,6 +947,16 @@ function toggleRSVPs() {
   var open = togglePanel("rsvp-list", document.querySelector(".letter-button"));
   document.getElementById("rsvp-seal-label").textContent = open ? "opened — click to reseal" : "sealed — click to break";
 }
+
+function openInvitationModal() {
+  document.getElementById("invitation-veil").classList.add("open");
+}
+function closeInvitationModal() {
+  document.getElementById("invitation-veil").classList.remove("open");
+}
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") closeInvitationModal();
+});
 
 // ── the library: every real book on the shelf ────────────────────────────────
 // Each book's rules live here, not scattered through the render code — add a
